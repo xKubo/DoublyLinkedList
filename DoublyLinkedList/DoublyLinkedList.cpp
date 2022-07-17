@@ -18,7 +18,7 @@ struct AnotherList {};
 struct CTest : 
     CLinkedListItem<CTest>,
     CLinkedListItem<CTest, OneList>,
-    CLinkedListItem<CTest, AnotherList>,
+    CLinkedListItem<CTest, AnotherList>
 {
     CTest(int num)
     {
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(ListIsNotEmptyAfterInsert)
 using CListOne = CLinkedList<CTest, OneList>;
 using CListTwo = CLinkedList<CTest, AnotherList>;
 
-BOOST_AUTO_TEST_CASE(ListIsNotEmptyAfterInsert)
+BOOST_AUTO_TEST_CASE(InsertIntoTwoDifferentLists)
 {
     CListOne o1;
     CListTwo o2;
@@ -67,5 +67,8 @@ BOOST_AUTO_TEST_CASE(ListIsNotEmptyAfterInsert)
     BOOST_REQUIRE(!o1.empty());
     BOOST_REQUIRE(!o2.empty());
 }
+
+
+
 
 BOOST_AUTO_TEST_SUITE_END()
