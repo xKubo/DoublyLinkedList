@@ -31,7 +31,7 @@ namespace LinkedList
 
 		void decrement() { m_pValue = m_pValue->pPrev; }
 
-		bool equal(CLinkedListItem<T, Tag> const& other) const
+		bool equal(CLinkedListIterator<T, Tag> const& other) const
 		{
 			return this->m_pValue == other.m_pValue;
 		}
@@ -39,6 +39,36 @@ namespace LinkedList
 		T& dereference() const { return *static_cast<T*>(m_pValue); }
 
 		CLinkedListItem<T, Tag>* m_pValue= nullptr;
+	};
+
+	template <typename T, typename Tag>
+	struct CLinkedListConstIterator : public boost::iterator_facade<
+		CLinkedListConstIterator<T, Tag>,
+		const T,
+		boost::bidirectional_traversal_tag>
+	{
+		CLinkedListConstIterator() = default;
+		CLinkedListConstIterator(const CLinkedListItem<T, Tag>* pVal) :
+			m_pValue(pVal)
+		{
+
+		}
+
+	private:
+		friend class boost::iterator_core_access;
+
+		void increment() { m_pValue = m_pValue->pNext; }
+
+		void decrement() { m_pValue = m_pValue->pPrev; }
+
+		bool equal(CLinkedListConstIterator<T, Tag> const& other) const
+		{
+			return this->m_pValue == other.m_pValue;
+		}
+
+		const T& dereference() const { return *static_cast<const T*>(m_pValue); }
+
+		const CLinkedListItem<T, Tag>* m_pValue = nullptr;
 	};
 
 	template <typename T, typename Tag = Empty>
@@ -82,20 +112,20 @@ namespace LinkedList
 			return m_Size == 0;
 		}
 
-		T* begin() {
-			return m_Head.pNext;
+		CLinkedListIterator<T, Tag> begin() {
+			return { m_Head.pNext };
 		}
 
-		T* end()
+		CLinkedListIterator<T, Tag> end()
 		{
-			return &m_Head;
+			return { &m_Head };
 		}
 
-		const T* begin() const {
+		CLinkedListConstIterator<T, Tag> begin() const {
 			return m_Head.pNext;
 		}
 
-		const T* end() const
+		CLinkedListConstIterator<T, Tag> end() const
 		{
 			return &m_Head;
 		}

@@ -68,7 +68,19 @@ BOOST_AUTO_TEST_CASE(InsertIntoTwoDifferentLists)
     BOOST_REQUIRE(!o2.empty());
 }
 
+BOOST_AUTO_TEST_CASE(IterateOverEmptyList)
+{
+    LinkedList::CLinkedList<CTest> Ts;
+    for (CTest& T : Ts)
+    {
 
+    }
+
+    for (const CTest& T : Ts)
+    {
+
+    }
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()
