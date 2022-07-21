@@ -7,9 +7,16 @@ namespace LinkedList
 	template <typename T, typename Tag = Empty>
 	struct CLinkedListItem
 	{
+		bool IsInList() const { return pPrev != nullptr; }
 		CLinkedListItem<T, Tag>* pPrev = nullptr;
 		CLinkedListItem<T, Tag>* pNext = nullptr;
 	};
+
+	template <typename T, typename Tag = Empty>
+	inline bool IsInList(const T& t)
+	{
+		return static_cast<const CLinkedListItem<T, Tag>&>(t).IsInList();
+	}
 
 	template <typename T, typename Tag>
 	struct CLinkedListIterator : public boost::iterator_facade<
@@ -76,7 +83,8 @@ namespace LinkedList
 	{
 		CLinkedList() : m_Size(0)
 		{
-
+			m_Head.pNext = &m_Head;
+			m_Head.pPrev = &m_Head;
 		}
 
 		using TEl = T;
@@ -85,6 +93,12 @@ namespace LinkedList
 		void Insert(T* pel)
 		{
 			auto pItem = static_cast<CLinkedListItem<T, Tag>*>(pel);
+			if (pItem->pPrev != nullptr)		// ignore already inserted item 
+			{
+				assert(pItem->pNext != nullptr);
+				return;
+			}
+			
 			pItem->pNext = m_Head.pNext;
 			m_Head.pNext = pItem;
 			pItem->pPrev = m_Head.pNext->pPrev;
@@ -97,8 +111,14 @@ namespace LinkedList
 		{
 
 			auto pItem = static_cast<CLinkedListItem<T, Tag>*>(pel);
+			if (pItem->pPrev == nullptr)
+			{
+				assert(pItem->pNext == nullptr);
+				return;
+			}
 			pItem->pNext->pPrev = pItem->pPrev;
 			pItem->pPrev->pNext = pItem->pNext;
+			pItem->pPrev = pItem->pNext = nullptr;
 			--m_Size;
 		}
 

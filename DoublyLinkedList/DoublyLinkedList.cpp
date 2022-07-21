@@ -20,15 +20,13 @@ struct CTest :
     CLinkedListItem<CTest, OneList>,
     CLinkedListItem<CTest, AnotherList>
 {
-    CTest(int num)
+    CTest(int num = 0)
     {
         n = num;
     }
 
     int n;
 };
-
-vector<CTest> Tests = { 1,2,3,4,5,6,7 };
 
 
 BOOST_AUTO_TEST_SUITE(LinkedList_Basics)
@@ -39,19 +37,42 @@ BOOST_AUTO_TEST_CASE(DefaultList_IsEmpty)
     BOOST_REQUIRE(Ts.empty());
 }
 
+BOOST_AUTO_TEST_CASE(MultipleInsert)
+{
+    CTest t;
+    LinkedList::CLinkedList<CTest> Ts;
+    Ts.Insert(&t);
+    Ts.Insert(&t);
+    BOOST_REQUIRE(IsInList(t));
+    BOOST_REQUIRE(Ts.size() == 1);
+}
+
+BOOST_AUTO_TEST_CASE(MultipleRemove)
+{
+    CTest t;
+    LinkedList::CLinkedList<CTest> Ts;
+    Ts.Remove(&t);
+    BOOST_REQUIRE(!IsInList(t));
+    Ts.Remove(&t);
+    BOOST_REQUIRE(!IsInList(t));
+    BOOST_REQUIRE(Ts.size() == 0);
+}
+
 
 BOOST_AUTO_TEST_CASE(ListIsEmptyAfterInsertAndRemove)
 {
+    CTest t;
     LinkedList::CLinkedList<CTest> Ts;
-    Ts.Insert(&Tests[2]);
-    Ts.Remove(&Tests[2]);
+    Ts.Insert(&t);
+    Ts.Remove(&t);
     BOOST_REQUIRE(Ts.empty());
 }
 
 BOOST_AUTO_TEST_CASE(ListIsNotEmptyAfterInsert)
 {
+    CTest t;
     LinkedList::CLinkedList<CTest> Ts;
-    Ts.Insert(&Tests[2]);
+    Ts.Insert(&t);
     BOOST_REQUIRE(!Ts.empty());
 }
 
@@ -60,12 +81,18 @@ using CListTwo = CLinkedList<CTest, AnotherList>;
 
 BOOST_AUTO_TEST_CASE(InsertIntoTwoDifferentLists)
 {
+    CTest t1(1);
     CListOne o1;
     CListTwo o2;
-    o1.Insert(&Tests[2]);
-    o2.Insert(&Tests[3]);
+    o1.Insert(&t1);
+    o2.Insert(&t1);
     BOOST_REQUIRE(!o1.empty());
     BOOST_REQUIRE(!o2.empty());
+    o1.Remove(&t1);
+    o2.Remove(&t1);
+    BOOST_REQUIRE(o1.empty());
+    BOOST_REQUIRE(o2.empty());
+
 }
 
 BOOST_AUTO_TEST_CASE(IterateOverEmptyList)
