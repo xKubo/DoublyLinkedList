@@ -109,5 +109,34 @@ BOOST_AUTO_TEST_CASE(IterateOverEmptyList)
     }
 }
 
+BOOST_AUTO_TEST_CASE(IterateOverList)
+{
+    LinkedList::CLinkedList<CTest> Ts;
+    std::vector<CTest> Tests{ 1,2 };
+    for (CTest& t : Tests)
+    {
+        Ts.Insert(&t);
+    }
+
+    std::vector<int> Nums;
+
+    for (CTest& T : Ts)
+    {
+        Nums.push_back(T.n);
+    }
+
+    sort(Nums.begin(), Nums.end());
+
+    bool test = Nums == std::vector<int>{ 1, 2 };
+    BOOST_REQUIRE(test);
+
+    for (CTest& t : Tests)
+    {
+        Ts.Remove(&t);
+    }
+
+    BOOST_REQUIRE(Ts.empty());
+    
+}
 
 BOOST_AUTO_TEST_SUITE_END()
